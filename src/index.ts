@@ -33,3 +33,5 @@ app.get("/bs", (_, res: Response) => {
 app.listen(port, () => {
    console.log(`[server]: http://localhost:${port}`)
 })
+
+export default app
