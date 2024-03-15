@@ -1,6 +1,6 @@
 import express, { Router } from "express"
 import { verifyToken } from "../middlewares"
-import { getPatient, getToken } from "../controllers"
+import { getPatient } from "../controllers"
 
 const BASE_ROUTE: string = '/patients'
 const router: Router = express.Router()
