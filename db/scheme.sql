@@ -37,12 +37,12 @@ drop table patient;
 -- 
 create table patient (
     email varchar PRIMARY KEY,
-    name varchar NOT NULL,
-    gender varchar DEFAULT NULL,
-    dob date NOT NULL,
-    age int NOT NULL,
-    height decimal(5,2) NOT NULL,
-    weight decimal(5,2) NOT NULL,
+    name varchar,
+    gender varchar,
+    dob date,
+    age int,
+    height decimal(5,2),
+    weight decimal(5,2),
     address varchar,
     img_url varchar,
 
