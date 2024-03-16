@@ -1,43 +1,42 @@
-create extension if not exists "uuid-ossp";
-
+-- create extension if not exists "uuid-ossp";
 drop table condition;
 drop table treatment;
 drop table record;
 drop table patient;
-drop table doctor;
-drop table hospital;
-
-create table hospital (
-    hospital_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-    name varchar NOT NULL,
-
-    uid varchar,
-    pass varchar,
-
-    address varchar(255),
-    dean_name varchar(15),
-    type varchar(6),
-
-    UNIQUE(uid)
-);
-
-create table doctor (
-    doctor_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
-    license_no int,
-    name varchar NOT NULL,
-
-    uid varchar,
-    pass varchar,
-    specialization varchar(15),
-
-    UNIQUE(uid, license_no),
-
-    hospital_id uuid,
-    FOREIGN KEY(hospital_id) REFERENCES hospital(hospital_id)
-);
-
+-- drop table doctor;
+-- drop table hospital;
+-- 
+-- create table hospital (
+--     hospital_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+--     name varchar NOT NULL,
+-- 
+--     uid varchar,
+--     pass varchar,
+-- 
+--     address varchar(255),
+--     dean_name varchar(15),
+--     type varchar(6),
+-- 
+--     UNIQUE(uid)
+-- );
+-- 
+-- create table doctor (
+--     doctor_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+--     license_no int,
+--     name varchar NOT NULL,
+-- 
+--     uid varchar,
+--     pass varchar,
+--     specialization varchar(15),
+-- 
+--     UNIQUE(uid, license_no),
+-- 
+--     hospital_id uuid,
+--     FOREIGN KEY(hospital_id) REFERENCES hospital(hospital_id)
+-- );
+-- 
 create table patient (
-    patient_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+    email varchar PRIMARY KEY,
     name varchar NOT NULL,
     gender varchar DEFAULT NULL,
     dob date NOT NULL,
@@ -46,7 +45,6 @@ create table patient (
     weight decimal(5,2) NOT NULL,
     address varchar,
     img_url varchar,
-    email varchar,
 
     uid varchar,
     pass varchar,
@@ -64,8 +62,8 @@ create table treatment (
     out_time timestamptz NOT NULL DEFAULT now(),
     pioneers varchar[],
 
-    patient_id uuid,
-    FOREIGN KEY(patient_id) REFERENCES patient(patient_id),
+    email varchar,
+    FOREIGN KEY(email) REFERENCES patient(email),
     CHECK (condition <= 3)
 );
 
@@ -85,8 +83,8 @@ create table record (
     vit_d int,
     cholestrol decimal(3,2), 
 
-    patient_id uuid,
-    FOREIGN KEY(patient_id) REFERENCES patient(patient_id),
+    email varchar,
+    FOREIGN KEY(email) REFERENCES patient(email),
     CHECK (platelets <= 550000)
 );
 
@@ -97,7 +95,7 @@ create table condition (
     onset Date,
     severity int,
 
-    CHECK (severity <= 3),
-    patient_id uuid,
-    FOREIGN KEY(patient_id) REFERENCES patient(patient_id)
+    email varchar,
+    FOREIGN KEY(email) REFERENCES patient(email),
+    CHECK (severity <= 3)
 );
