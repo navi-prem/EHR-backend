@@ -3,7 +3,7 @@ import jwt, { JwtPayload } from "jsonwebtoken"
 
 const verifyHospitalToken = async (req: Request, res: Response, next: NextFunction) => {
     const { type } = req.body
-    const token = req.cookies['access_token'];
+    const token = req.cookies['h_token'];
 
     if (!token) return res.status(401).json({ message: 'Unauthorized: No token provided' });
     if (!type || type !== 'H') return res.status(417).send("Unexpected body.")
