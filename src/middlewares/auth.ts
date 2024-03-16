@@ -37,8 +37,15 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
         const { p_token: token } = req.body
         const { d_token } = req.body
 
-        if (d_token) next()
-        else if (!token) {
+        if (d_token) {
+            try {
+                const d: JwtPayload | string = jwt.verify(d_token, process.env.DOCTOR_SECRET || '');
+                if (typeof d === 'object' && (d?.type !== 'D')) throw new Error("Not Authorized.")
+                    next();
+            } catch (err) {
+                return res.status(403).json({ message: 'Forbidden: Invalid token', err });
+            }
+        } else if (!token) {
             return res.status(401).json({ message: 'Unauthorized: No token provided' });
         } else {
             try {

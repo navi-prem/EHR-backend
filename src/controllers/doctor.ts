@@ -45,7 +45,7 @@ export const Sendotp = async (req: Request, res: Response) => {
         to: email,
         subject: "otp",
         html: `<html>${otp}</html>`,
-    }, (err:string) => {
+    }, (err: Error | null) => {
         if (err) {
           return res
             .status(500)
