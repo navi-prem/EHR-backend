@@ -11,11 +11,11 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
         const token = req.cookies['d_token'];
 
         if (!token) return res.status(401).json({ message: 'Unauthorized: No token provided' });
-        const { email } = req.body
+        const { uid } = req.body
 
         try {
             const d: JwtPayload | string = jwt.verify(token, process.env.DOCTOR_SECRET || '');
-            if (typeof d === 'object' && d?.email !== email) throw new Error("Not Authorized.")
+            if (typeof d === 'object' && d?.uid !== uid) throw new Error("Not Authorized.")
                 next();
         } catch (err) {
             return res.status(403).json({ message: 'Forbidden: Invalid token', err });
@@ -33,20 +33,25 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
         } catch (err) {
             return res.status(403).json({ message: 'Forbidden: Invalid token', err });
         }
-    } else {
+    } else if (type === 'P') {
         const token = req.cookies['p_token'];
+        const d_token = req.cookies['d_token'];
 
-        if (!token) return res.status(401).json({ message: 'Unauthorized: No token provided' });
-        const { uid, email } = req.body
-
-        try {
-            const d: JwtPayload | string = jwt.verify(token, process.env.PATIENT_SECRET || '');
-            if (typeof d === 'object' && (d?.uid !== uid || d?.type !== type || d?.email !== email)) throw new Error("Not Authorized.")
-                next();
-        } catch (err) {
-            return res.status(403).json({ message: 'Forbidden: Invalid token', err });
+        if (d_token) next()
+        else if (!token) {
+            return res.status(401).json({ message: 'Unauthorized: No token provided' });
+        } else {
+            try {
+                const d: JwtPayload | string = jwt.verify(token, process.env.PATIENT_SECRET || '');
+                if (typeof d === 'object' && (d?.type !== type)) throw new Error("Not Authorized.")
+                if (typeof d === 'object') req.body.email = d?.email
+                    next();
+            } catch (err) {
+                return res.status(403).json({ message: 'Forbidden: Invalid token', err });
+            }
         }
     }
+    else return res.status(417).send("Unexpected type.")
 };
 
 export default verifyToken

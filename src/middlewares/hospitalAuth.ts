@@ -13,6 +13,8 @@ const verifyHospitalToken = async (req: Request, res: Response, next: NextFuncti
     try {
         const d: JwtPayload | string = jwt.verify(token, process.env.HOSPITAL_SECRET || '');
         if (typeof d === 'object' && (d?.uid !== uid || d?.type !== type)) throw new Error("Not Authorized.")
+            if (typeof d === 'object') req.body.hospital_id = d.hospital_id
+            if (typeof d === 'object') console.log(d)
             next();
     } catch (err) {
         return res.status(403).json({ message: 'Forbidden: Invalid token', err });
