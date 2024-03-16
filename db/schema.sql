@@ -69,39 +69,38 @@
 --     FOREIGN KEY(doctor_id) REFERENCES doctor(doctor_id),
 --     CHECK (condition <= 3)
 -- );
--- 
--- create table record (
---     record_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
---     sugar decimal(3,2),
---     bp decimal(3,2),
---     rbc decimal(1,2),
---     wbc decimal(2,2),
---     hb decimal(3,2),
---     platelets int,
---     esr decimal(2,2),
---     mcv decimal(3,2),
---     heart_rate int,
---     na decimal(3,2),
---     k  decimal(2,1),
---     vit_d int,
---     cholestrol decimal(3,2), 
---     chest_pain boolean,
---     smoking boolean,
---     peer_pressure boolean,
---     allergy boolean,
---     wheezing boolean,
---     alcohol boolean,
---     insulin boolean,
---     bmi boolean,
---     urea decimal(2,2),
---     hypretension boolean,
---     appetite boolean,
---     anaemic boolean
--- 
---     email varchar,
---     FOREIGN KEY(email) REFERENCES patient(email),
---     CHECK (platelets <= 550000)
--- );
+drop table record;
+create table record (
+    record_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+    sugar decimal,
+    bp decimal,
+    rbc decimal,
+    wbc decimal,
+    hb decimal,
+    platelets int,
+    esr decimal,
+    mcv decimal,
+    heart_rate int,
+    na decimal,
+    k  decimal,
+    vit_d int,
+    cholestrol decimal, 
+    chest_pain boolean,
+    smoking boolean,
+    peer_pressure boolean,
+    allergy boolean,
+    wheezing boolean,
+    alcohol boolean,
+    insulin boolean,
+    bmi boolean,
+    urea decimal,
+    hypretension boolean,
+    appetite boolean,
+    anaemic boolean,
+
+    email varchar,
+    FOREIGN KEY(email) REFERENCES patient(email)
+);
 
 -- create table condition (
 --     condition_id uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -114,4 +113,4 @@
 --     FOREIGN KEY(email) REFERENCES patient(email),
 --     CHECK (severity <= 3)
 -- );
-alter table patient add bg varchar;
+-- alter table patient add bg varchar;

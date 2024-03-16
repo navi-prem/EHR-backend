@@ -15,6 +15,7 @@ const verifyHospitalToken = async (req: Request, res: Response, next: NextFuncti
         if (typeof d === 'object' && (d?.uid !== uid || d?.type !== type)) throw new Error("Not Authorized.")
             next();
     } catch (err) {
+        console.log(err)
         return res.status(403).json({ message: 'Forbidden: Invalid token', err });
     }
 }

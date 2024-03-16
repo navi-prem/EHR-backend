@@ -102,8 +102,10 @@ export const updateRecord = async (req: Request, res: Response) => {
     const { email, sugar, bp, rbc, wbc, hb, platelets, esr, mcv, heart_rate, na, k, vitamin_d, cholestrol } = req.body
 
     if (
-        !email || !sugar || !bp || !rbc || !wbc || !hb || !platelets || !esr || !mcv || !heart_rate || !na || !k || !vitamin_d || cholestrol 
-    ) return res.status(417).send("Unexpected params.")
+        !email || !sugar || !bp || !rbc || !wbc || !hb || !platelets || !esr || !mcv || !heart_rate || !na || !k || !vitamin_d || !cholestrol 
+    ) {
+        return res.status(417).send("Unexpected params.")
+    }
 
     const client = await pool.connect()
 
@@ -112,6 +114,7 @@ export const updateRecord = async (req: Request, res: Response) => {
         client.release()
         return res.status(200).send("Records updated successfully.")
     } catch (err) {
+        console.log(err)
         client.release()
         return res.status(400).send("Records failed to update.")
     }
