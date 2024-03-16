@@ -97,3 +97,22 @@ export const addTreatment = async (req: Request, res: Response) => {
         return res.status(400).send("Bad Request.")
     }
 }
+
+export const updateRecord = async (req: Request, res: Response) => {
+    const { email, sugar, bp, rbc, wbc, hb, platelets, esr, mcv, heart_rate } = req.body
+
+    if (
+        !email || !sugar || !bp || !rbc || !wbc || !hb || !platelets || !esr || !mcv || !heart_rate
+    ) return res.status(417).send("Unexpected params.")
+
+    const client = await pool.connect()
+
+    try {
+        await client.query(Doctor.updateRecord, [email, sugar, bp, rbc, wbc, hb, platelets, esr, mcv, heart_rate])
+        client.release()
+        return res.status(200).send("Records updated successfully.")
+    } catch (err) {
+        client.release()
+        return res.status(400).send("Records failed to update.")
+    }
+}
