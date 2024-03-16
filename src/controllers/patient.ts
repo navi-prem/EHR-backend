@@ -12,6 +12,6 @@ export const getPatient = async (req: Request, res: Response) => {
         return res.status(200).json(rows[0])
     } catch (err) {
         client.release()
-        return res.status(500).send("Internal Server Error.")
+        return res.status(400).send("Internal Server Error.")
     }
 }

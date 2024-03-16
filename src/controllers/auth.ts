@@ -25,7 +25,7 @@ export const getToken = async (req: Request, res: Response) => {
             msg = "Patient signed in successfully"
         } catch (err) {
             console.log(err)
-            status = 500
+            status = 400
             msg = "Internal Server Error."
         } finally {
             client.release()
@@ -49,7 +49,7 @@ export const getToken = async (req: Request, res: Response) => {
             msg = "Admin signed in successfully"
         } catch (err) {
             console.log(err)
-            status = 500
+            status = 400
             msg = "Internal Server Error."
         } finally {
             client.release()
@@ -73,7 +73,7 @@ export const getToken = async (req: Request, res: Response) => {
             msg = "Patient signed in successfully"
         } catch (err) {
             console.log(err)
-            status = 500
+            status = 400
             msg = "Internal Server Error."
         } finally {
             client.release()
