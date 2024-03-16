@@ -82,3 +82,18 @@ export const deleteDoctor = async (req: Request, res: Response) => {
     }
 }
 
+export const getDetails = async (req: Request, res: Response) => {
+    const { hospital_id } = req.body
+    if (!hospital_id) return res.status(417).send("Unexpected params.")
+
+    const client = await pool.connect()
+
+    try {
+        const { rows } = await client.query(Hospital.getDetails, [hospital_id])
+        client.release()
+        return res.status(200).json(rows)
+    } catch (err) {
+        client.release()
+        return res.status(400).send("Internal Server Error.")
+    }
+}

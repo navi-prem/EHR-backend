@@ -27,7 +27,7 @@ export const getToken = async (req: Request, res: Response) => {
             client.release()
             return res.status(400).send("Bad Request.")
         } 
-        return res.status(status).json({ d_token: token })
+        return res.status(200).json({ d_token: token })
     } else if (type === 'H') {
         let status = 417
         let msg: string | { hospital_id: string, h_token: string } = "Unexpected params."

@@ -1,3 +1,3 @@
 export { getToken } from './auth'
 export { getPatient } from './patient'
-export { getDoctors, addDoctor, updateDoctor, deleteDoctor } from './hospital'
+export { getDoctors, addDoctor, updateDoctor, deleteDoctor, getDetails } from './hospital'
