@@ -37,11 +37,11 @@ export const getToken = async (req: Request, res: Response) => {
             if (rows[0].pass !== pass) return res.status(401).send("Unauthorized")
 
             token = jwt.sign({ type: 'D', uid }, process.env.DOCTOR_SECRET || '', { expiresIn: '7d' });
+            return res.status(200).json({ d_token: token, doctor_id: rows[0].doctor_id })
         } catch (err) {
             client.release()
             return res.status(400).send("Bad Request.")
         } 
-        return res.status(200).json({ d_token: token })
     } else if (type === 'H') {
         let status = 417
         let msg: string | { hospital_id: string, h_token: string } = "Unexpected params."
