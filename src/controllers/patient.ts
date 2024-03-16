@@ -23,7 +23,7 @@ export const getPatient = async (req: Request, res: Response) => {
 }
 
 export const signUp = async (req: Request, res: Response) => {
-    const { email, uid, pass } = req.body
+    const { email, uid, pass, name, gender, dob, weight, height, address } = req.body
 
     if (
         !email || !uid || !pass
@@ -32,7 +32,7 @@ export const signUp = async (req: Request, res: Response) => {
     const client = await pool.connect()
 
     try {
-        await client.query(Patient.addPatient, [email, uid, pass])
+        await client.query(Patient.addPatient, [email, uid, pass, name, gender, dob, weight, height, address])
         client.release()
         return res.status(200).send("Patient created successfully.")
     } catch (err) {

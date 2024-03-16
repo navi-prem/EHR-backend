@@ -39,7 +39,7 @@ const transporter = nodemailer.createTransport({
 
 export const Sendotp = async (req: Request, res: Response) => {
     const { otp } = req.body;
-    const { email } = req.body.user
+    const { email } = req.body
     transporter.sendMail({
         from: process.env.VERIFIED_EMAIL,
         to: email,
