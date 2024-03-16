@@ -14,22 +14,22 @@ export const getToken = async (req: Request, res: Response) => {
         if (uid === undefined || pass === undefined) return res.status(status).send(msg)
 
         const client = await pool.connect()
+        let token
 
         try {
             const { rows } = await client.query(Auth.getDoctor, [uid])
             if (rows.length === 0) return res.status(404).send("NO DOCTOR FOUND.")
             if (rows[0].pass !== pass) return res.status(401).send("Unauthorized")
 
-            const token = jwt.sign({ type: 'P', uid }, process.env.PATIENT_SECRET || '', { expiresIn: '7d' });
-            res.cookie("d_token", token, { httpOnly: true, maxAge: 86400000, secure: process.env.SECURE === 't' })
+            token = jwt.sign({ type: 'P', uid }, process.env.PATIENT_SECRET || '', { expiresIn: '7d' });
             status = 200
             msg = "Doctor signed in successfully"
         } catch (err) {
-            console.log(err)
             status = 400
             msg = "Internal Server Error."
         } finally {
             client.release()
+            if (status == 200) return res.status(status).send(msg).cookie("d_token", token, { httpOnly: true, maxAge: 86400000, secure: process.env.SECURE === 't' })
             return res.status(status).send(msg)
         }
     } else if (type === 'H') {
@@ -46,8 +46,6 @@ export const getToken = async (req: Request, res: Response) => {
             if (rows[0].pass !== pass) return res.status(401).send("Unauthorized")
 
             const token = jwt.sign({ type: 'H', uid, hospital_id: rows[0].hospital_id }, process.env.HOSPITAL_SECRET || '', { expiresIn: '7d' });
-            res.cookie("h_token", token, { httpOnly: true, maxAge: 86400000, secure: process.env.SECURE === 't' })
-            client.release()
             status = 200
             msg = { hospital_id: rows[0].hospital_id }
         } catch (err) {
@@ -55,7 +53,8 @@ export const getToken = async (req: Request, res: Response) => {
             msg = "Internal Server Error."
         } finally {
             client.release()
-            return res.status(status).json(msg)
+            if (status === 200) return res.status(status).json(msg).cookie("h_token", token, { httpOnly: true, maxAge: 86400000, secure: process.env.SECURE === 't' })
+            else return res.status(status).send(msg)
         }
     } else if (type === 'P'){
         let status = 417
