@@ -79,16 +79,16 @@ export const addCondition = async (req: Request, res: Response) => {
 }
 
 export const addTreatment = async (req: Request, res: Response) => {
-    const { treatment_name, t_type, condition, doctor_id, in_time, out_time, pioneers } = req.body
+    const { treatment_name, t_type, condition, doctor_id, in_time, out_time, pioneers, email } = req.body
 
     if (
-        !treatment_name || !t_type || !condition || !doctor_id || !in_time || !out_time || !pioneers
+        !treatment_name || !t_type || !condition || !doctor_id || !in_time || !out_time || !pioneers || !email
     ) return res.status(417).send("Unexpected params.")
 
     const client = await pool.connect()
 
     try {
-        await pool.query(Doctor.addTreatment, [ treatment_name, t_type, condition, doctor_id, in_time, out_time, pioneers ])
+        await pool.query(Doctor.addTreatment, [ treatment_name, t_type, condition, doctor_id, in_time, out_time, pioneers, email ])
         client.release()
         return res.status(200).send("Treatment added successfully")
     } catch (err) {
