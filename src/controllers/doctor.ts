@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 import { pool } from "../../db"
-import { Hospital, Patient } from "../queries"
+import { Doctor, Patient } from "../queries"
 import dotenv from "dotenv"
 dotenv.config();
 import * as AWS from "@aws-sdk/client-ses";
@@ -56,4 +56,44 @@ export const Sendotp = async (req: Request, res: Response) => {
             .json({ statusCode: 200, body: { message: "Email sent successfully" } });
    }
 });
+}
+
+export const addCondition = async (req: Request, res: Response) => {
+    const { value, onset, severity, email } = req.body
+
+    if (
+        !value || !onset || !severity || !email
+    ) return res.status(417).send("Unexpected params.")
+
+    const client = await pool.connect()
+
+    try {
+        await pool.query(Doctor.addCondition, [value, onset, severity, email])
+        client.release()
+        return res.status(200).send("Condition added successfully")
+    } catch (err) {
+        console.log(err)
+        client.release()
+        return res.status(400).send("Bad Request.")
+    }
+}
+
+export const addTreatment = async (req: Request, res: Response) => {
+    const { treatment_name, t_type, condition, doctor_id, in_time, out_time, pioneers } = req.body
+
+    if (
+        !treatment_name || !t_type || !condition || !doctor_id || !in_time || !out_time || !pioneers
+    ) return res.status(417).send("Unexpected params.")
+
+    const client = await pool.connect()
+
+    try {
+        await pool.query(Doctor.addTreatment, [ treatment_name, t_type, condition, doctor_id, in_time, out_time, pioneers ])
+        client.release()
+        return res.status(200).send("Treatment added successfully")
+    } catch (err) {
+        console.log(err)
+        client.release()
+        return res.status(400).send("Bad Request.")
+    }
 }

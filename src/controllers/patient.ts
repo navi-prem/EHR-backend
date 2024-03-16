@@ -23,16 +23,16 @@ export const getPatient = async (req: Request, res: Response) => {
 }
 
 export const signUp = async (req: Request, res: Response) => {
-    const { email, uid, pass, name, gender, dob, weight, height, address, bg } = req.body
+    const { email, uid, pass, name, gender, dob, weight, height, address, bg, img_url } = req.body
 
     if (
-        !email || !uid || !pass || !name || !gender || !dob || !weight || !height || !address || !bg 
+        !email || !uid || !pass || !name || !gender || !dob || !weight || !height || !address || !bg || !img_url
     ) return res.status(417).send("Unexpected params.")
 
     const client = await pool.connect()
 
     try {
-        await client.query(Patient.addPatient, [email, uid, pass, name, gender, dob, weight, height, address, bg])
+        await client.query(Patient.addPatient, [email, uid, pass, name, gender, dob, weight, height, address, bg, img_url])
         client.release()
         return res.status(200).send("Patient created successfully.")
     } catch (err) {
