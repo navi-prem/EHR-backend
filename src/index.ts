@@ -1,7 +1,7 @@
 import express, { Express, Response } from "express"
 import dotenv from "dotenv"
 import cors from 'cors'
-import { Auth, Hospital, Patient } from "./routes"
+import { Auth, Doctor, Hospital, Patient } from "./routes"
 import cookieParser from 'cookie-parser'
 
 dotenv.config()
@@ -26,6 +26,7 @@ app.use(express.json())
 app.use(Auth.BASE_ROUTE, Auth.router)
 app.use(Patient.BASE_ROUTE, Patient.router)
 app.use(Hospital.BASE_ROUTE, Hospital.router)
+app.use(Doctor.BASE_ROUTE, Doctor.router)
 
 app.get("/bs", (_, res: Response) => {
     return res.status(200).send(process.env.TEST_MSG || "Hello World!")
