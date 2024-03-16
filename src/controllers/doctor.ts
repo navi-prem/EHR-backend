@@ -99,16 +99,16 @@ export const addTreatment = async (req: Request, res: Response) => {
 }
 
 export const updateRecord = async (req: Request, res: Response) => {
-    const { email, sugar, bp, rbc, wbc, hb, platelets, esr, mcv, heart_rate } = req.body
+    const { email, sugar, bp, rbc, wbc, hb, platelets, esr, mcv, heart_rate, na, k, vitamin_d, cholestrol } = req.body
 
     if (
-        !email || !sugar || !bp || !rbc || !wbc || !hb || !platelets || !esr || !mcv || !heart_rate
+        !email || !sugar || !bp || !rbc || !wbc || !hb || !platelets || !esr || !mcv || !heart_rate || !na || !k || !vitamin_d || cholestrol 
     ) return res.status(417).send("Unexpected params.")
 
     const client = await pool.connect()
 
     try {
-        await client.query(Doctor.updateRecord, [email, sugar, bp, rbc, wbc, hb, platelets, esr, mcv, heart_rate])
+        await client.query(Doctor.updateRecord, [email, sugar, bp, rbc, wbc, hb, platelets, esr, mcv, heart_rate, na, k, vitamin_d, cholestrol])
         client.release()
         return res.status(200).send("Records updated successfully.")
     } catch (err) {
