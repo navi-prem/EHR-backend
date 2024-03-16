@@ -27,7 +27,7 @@ export const getToken = async (req: Request, res: Response) => {
             client.release()
             return res.status(400).send("Bad Request.")
         } 
-        res.cookie("d_token", token, { sameSite: 'none', httpOnly: true, maxAge: 99999999, secure: process.env.SECURE === 't' })
+        res.cookie("d_token", token, { domain: 'http://localhost:3000', path: '/', sameSite: 'none', httpOnly: true, maxAge: 99999999, secure: process.env.SECURE === 't' })
         return res.status(status).send("Doctor signed in successfully")
     } else if (type === 'H') {
         let status = 417
@@ -45,7 +45,7 @@ export const getToken = async (req: Request, res: Response) => {
 
             const token = jwt.sign({ type: 'H', uid, hospital_id: rows[0].hospital_id }, process.env.HOSPITAL_SECRET || '', { expiresIn: '7d' });
             msg = { hospital_id: rows[0].hospital_id }
-            res.cookie("h_token", token, { sameSite: 'none', httpOnly: true, maxAge: 99999999, secure: process.env.SECURE === 't' })
+            res.cookie("h_token", token, { domain: 'http://localhost:3000', path: '/', sameSite: 'none', httpOnly: true, maxAge: 99999999, secure: process.env.SECURE === 't' })
             return res.status(200).json(msg)
         } catch (err) {
             client.release()
@@ -65,7 +65,7 @@ export const getToken = async (req: Request, res: Response) => {
             if (rows[0].pass !== pass) return res.status(401).send("Unauthorized")
 
             const token = jwt.sign({ type: 'P', email: rows[0].email }, process.env.PATIENT_SECRET || '', { expiresIn: '7d' });
-            res.cookie("p_token", token, { sameSite: 'none', httpOnly: true, maxAge: 99999999, secure: process.env.SECURE === 't' })
+            res.cookie("p_token", token, { domain: 'http://localhost:3000', path: '/', sameSite: 'none', httpOnly: true, maxAge: 99999999, secure: process.env.SECURE === 't' })
             status = 200
             msg = "Patient signed in successfully"
         } catch (err) {
