@@ -1,9 +1,23 @@
 import { Request, Response } from "express"
 import { pool } from "../../db"
 import { Auth } from "../queries"
-import jwt from "jsonwebtoken"
+import jwt, { JwtPayload } from "jsonwebtoken"
 
 export const getToken = async (req: Request, res: Response) => {
+    const { d_token } = req.body
+    if (d_token) {
+        const { uid, email } = req.body
+
+        try {
+            const d: JwtPayload | string = jwt.verify(d_token, process.env.DOCTOR_SECRET || '');
+            if (typeof d === 'object' && (d?.type !== 'D' || d?.uid !== uid)) throw new Error("Not Authorized.")
+
+            const p_token = jwt.sign({ type: 'P', email: email }, process.env.PATIENT_SECRET || '', { expiresIn: '7d' });
+            return res.status(200).json({ p_token })
+        } catch (err) {
+            return res.status(403).json({ message: 'Forbidden: Invalid token', err });
+        }
+    }
     const { type } = req.body
     if (type === undefined) return res.status(417).send("Unexpected params.")
 
@@ -63,7 +77,6 @@ export const getToken = async (req: Request, res: Response) => {
             if (rows[0].pass !== pass) return res.status(401).send("Unauthorized")
 
             const token = jwt.sign({ type: 'P', email: rows[0].email }, process.env.PATIENT_SECRET || '', { expiresIn: '7d' });
-            res.cookie("p_token", token, {httpOnly: true})
             status = 200
             msg = { p_token: token }
         } catch (err) {
