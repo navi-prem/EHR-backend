@@ -27,11 +27,10 @@ export const getToken = async (req: Request, res: Response) => {
             client.release()
             return res.status(400).send("Bad Request.")
         } 
-        res.cookie("d_token", token, {httpOnly: true})
-        return res.status(status).send("Doctor signed in successfully")
+        return res.status(status).json({ d_token: token })
     } else if (type === 'H') {
         let status = 417
-        let msg: string | { hospital_id: string } = "Unexpected params."
+        let msg: string | { hospital_id: string, h_token: string } = "Unexpected params."
         const { uid, pass } = req.body
         if (uid === undefined || pass === undefined) return res.status(status).send(msg)
 
@@ -44,8 +43,7 @@ export const getToken = async (req: Request, res: Response) => {
             if (rows[0].pass !== pass) return res.status(401).send("Unauthorized")
 
             const token = jwt.sign({ type: 'H', uid, hospital_id: rows[0].hospital_id }, process.env.HOSPITAL_SECRET || '', { expiresIn: '7d' });
-            msg = { hospital_id: rows[0].hospital_id }
-            res.cookie("h_token", token, {httpOnly: true})
+            msg = { hospital_id: rows[0].hospital_id, h_token: token }
             return res.status(200).json(msg)
         } catch (err) {
             client.release()
@@ -53,7 +51,7 @@ export const getToken = async (req: Request, res: Response) => {
         }
     } else if (type === 'P'){
         let status = 417
-        let msg = "Unexpected params."
+        let msg: string | { p_token: string } = "Unexpected params."
         const { uid, pass , email } = req.body
         if (uid === undefined && email === undefined) return res.status(status).send(msg)
 
@@ -67,14 +65,14 @@ export const getToken = async (req: Request, res: Response) => {
             const token = jwt.sign({ type: 'P', email: rows[0].email }, process.env.PATIENT_SECRET || '', { expiresIn: '7d' });
             res.cookie("p_token", token, {httpOnly: true})
             status = 200
-            msg = "Patient signed in successfully"
+            msg = { p_token: token }
         } catch (err) {
             console.log(err)
             status = 400
             msg = "Internal Server Error."
         } finally {
             client.release()
-            return res.status(status).send(msg)
+            return res.status(status).json(msg)
         }
     } 
     else return res.status(417).send("Unexpected type.")

@@ -8,7 +8,7 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
     const { type } = req.body
 
     if (type === 'D') {
-        const token = req.cookies['d_token'];
+        const { d_token: token } = req.body
 
         if (!token) return res.status(401).json({ message: 'Unauthorized: No token provided' });
         const { uid } = req.body
@@ -21,7 +21,7 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
             return res.status(403).json({ message: 'Forbidden: Invalid token', err });
         }
     } else if (type === 'H') {
-        const token = req.cookies['h_token'];
+        const { h_token: token } = req.body
 
         if (!token) return res.status(401).json({ message: 'Unauthorized: No token provided' });
         const { uid  } = req.body
@@ -34,8 +34,8 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
             return res.status(403).json({ message: 'Forbidden: Invalid token', err });
         }
     } else if (type === 'P') {
-        const token = req.cookies['p_token'];
-        const d_token = req.cookies['d_token'];
+        const { p_token: token } = req.body
+        const { d_token } = req.body
 
         if (d_token) next()
         else if (!token) {
