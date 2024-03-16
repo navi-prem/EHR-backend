@@ -9,7 +9,7 @@ export const getToken = async (req: Request, res: Response) => {
 
     if (type === 'D') {
         let status = 417
-        let msg = "Unexpected params."
+        let msg = "Unexpected params." 
         const { uid, pass } = req.body
         if (uid === undefined || pass === undefined) return res.status(status).send(msg)
 
@@ -21,7 +21,7 @@ export const getToken = async (req: Request, res: Response) => {
             if (rows[0].pass !== pass) return res.status(401).send("Unauthorized")
 
             const token = jwt.sign({ type: 'P', uid }, process.env.PATIENT_SECRET || '', { expiresIn: '7d' });
-            res.cookie("d_token", token, { httpOnly: true, maxAge: 86400000 })
+            res.cookie("d_token", token, { httpOnly: true, maxAge: 86400000, secure: process.env.SECURE === 't' })
             status = 200
             msg = "Doctor signed in successfully"
         } catch (err) {
@@ -34,7 +34,7 @@ export const getToken = async (req: Request, res: Response) => {
         }
     } else if (type === 'H') {
         let status = 417
-        let msg = "Unexpected params."
+        let msg: string | { hospital_id: string } = "Unexpected params."
         const { uid, pass } = req.body
         if (uid === undefined || pass === undefined) return res.status(status).send(msg)
 
@@ -45,13 +45,12 @@ export const getToken = async (req: Request, res: Response) => {
             if (rows.length === 0) return res.status(404).send("NO DOCTOR FOUND.")
             if (rows[0].pass !== pass) return res.status(401).send("Unauthorized")
 
-            console.log(rows)
             const token = jwt.sign({ type: 'H', uid, hospital_id: rows[0].hospital_id }, process.env.HOSPITAL_SECRET || '', { expiresIn: '7d' });
-            res.cookie("h_token", token, { httpOnly: true, maxAge: 86400000 })
+            res.cookie("h_token", token, { httpOnly: true, maxAge: 86400000, secure: process.env.SECURE === 't' })
             client.release()
-            return res.status(200).json({ hospital_id: rows[0].hospital_id })
+            status = 200
+            msg = { hospital_id: rows[0].hospital_id }
         } catch (err) {
-            console.log(err)
             status = 400
             msg = "Internal Server Error."
         } finally {
@@ -72,7 +71,7 @@ export const getToken = async (req: Request, res: Response) => {
             if (rows[0].pass !== pass) return res.status(401).send("Unauthorized")
 
             const token = jwt.sign({ type: 'P', email: rows[0].email }, process.env.PATIENT_SECRET || '', { expiresIn: '7d' });
-            res.cookie("p_token", token, { httpOnly: true, maxAge: 86400000 })
+            res.cookie("p_token", token, { httpOnly: true, maxAge: 86400000, secure: process.env.SECURE === 't' })
             status = 200
             msg = "Patient signed in successfully"
         } catch (err) {
