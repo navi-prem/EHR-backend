@@ -11,7 +11,9 @@ export const getPatient = async (req: Request, res: Response) => {
     try {
         const { rows } = await client.query(Patient.getPatient, [email])
         const { rows: treatments } = await client.query(Patient.getTreatments, [email])
+        const { rows: conditions } = await client.query(Patient.getConditions, [email])
         rows[0].treatments = treatments
+        rows[0].conditions = conditions
         client.release()
         return res.status(200).json(rows[0])
     } catch (err) {
