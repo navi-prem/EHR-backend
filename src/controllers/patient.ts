@@ -10,6 +10,7 @@ export const getPatient = async (req: Request, res: Response) => {
     const client = await pool.connect()
     try {
         const { rows } = await client.query(Patient.getPatient, [email])
+
         const { rows: treatments } = await client.query(Patient.getTreatments, [email])
         const { rows: conditions } = await client.query(Patient.getConditions, [email])
         rows[0].treatments = treatments
@@ -17,22 +18,24 @@ export const getPatient = async (req: Request, res: Response) => {
         client.release()
         return res.status(200).json(rows[0])
     } catch (err) {
+        console.log(err)
         client.release()
         return res.status(400).send("Internal Server Error.")
     }
 }
 
 export const signUp = async (req: Request, res: Response) => {
-    const { email, uid, pass, name, gender, dob, weight, height, address, bg, img_url } = req.body
+    const { email, uid, pass, name, gender, dob, weight, height, address, bg, img_url, age } = req.body
 
     if (
-        !email || !uid || !pass || !name || !gender || !dob || !weight || !height || !address || !bg || !img_url
+        !email || !uid || !pass || !name || !gender || !dob || !weight || !height || !address || !bg || !img_url || !age
     ) return res.status(417).send("Unexpected params.")
 
     const client = await pool.connect()
 
     try {
-        await client.query(Patient.addPatient, [email, uid, pass, name, gender, dob, weight, height, address, bg, img_url])
+        await client.query(Patient.addPatient, [email, uid, pass, name, gender, dob, weight, height, address, bg, img_url, age])
+        await client.query(Patient.addRecord, [email])
         client.release()
         return res.status(200).send("Patient created successfully.")
     } catch (err) {
