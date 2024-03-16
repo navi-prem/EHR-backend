@@ -48,15 +48,15 @@ export const getToken = async (req: Request, res: Response) => {
             console.log(rows)
             const token = jwt.sign({ type: 'H', uid, hospital_id: rows[0].hospital_id }, process.env.HOSPITAL_SECRET || '', { expiresIn: '7d' });
             res.cookie("h_token", token, { httpOnly: true, maxAge: 86400000 })
-            status = 200
-            msg = "Admin signed in successfully"
+            client.release()
+            return res.status(200).json({ hospital_id: rows[0].hospital_id })
         } catch (err) {
             console.log(err)
             status = 400
             msg = "Internal Server Error."
         } finally {
             client.release()
-            return res.status(status).send(msg)
+            return res.status(status).json(msg)
         }
     } else if (type === 'P'){
         let status = 417

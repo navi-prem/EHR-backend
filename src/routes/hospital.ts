@@ -1,13 +1,13 @@
 import express, { Router } from "express"
 import { verifyHospitalToken } from "../middlewares"
-import { getDoctors } from "../controllers/hospital"
+import { getDoctors, addDoctor, updateDoctor, deleteDoctor } from "../controllers"
 
 const BASE_ROUTE: string = '/hospital'
 const router: Router = express.Router()
 
 router.post('/get-doctors', verifyHospitalToken, getDoctors)
-// router.post('/get-doctors', verifyHospitalToken, )
-// router.put('/get-doctors', verifyHospitalToken, )
-// router.delete('/get-doctors', verifyHospitalToken, )
+router.post('/add-doctor', verifyHospitalToken, addDoctor)
+router.put('/update-doctor', verifyHospitalToken, updateDoctor)
+router.delete('/delete-doctor', verifyHospitalToken, deleteDoctor)
 
 export default { BASE_ROUTE, router }
