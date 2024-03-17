@@ -61,8 +61,9 @@ To set up the backend locally, follow these steps:
    VERIFIED_EMAIL=<verified-email>
    PY_URL=<python-api-url>
    ```
-5. Run the server using `npm start` or `npm run dev` for development mode.
-6. Access the API endpoints at `http://localhost:6969` or the specified port.
+5. Build the server (for typescript) using `npm run build`.
+6. Run the server using `npm run dev` for development mode.
+7. Access the API endpoints at `http://localhost:3000` or the specified port.
 
 ## Contributing
 Contributions to the development and enhancement of this backend application are welcome! To contribute, please fork the repository, make your changes, and submit a pull request with descriptive comments.
