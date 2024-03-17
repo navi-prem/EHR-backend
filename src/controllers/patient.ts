@@ -1,6 +1,18 @@
 import { Request, Response } from "express"
 import { pool } from "../../db"
 import { Patient } from "../queries"
+import axios from "axios"
+import dotenv from 'dotenv'
+dotenv.config()
+
+export const proxy = async (req: Request, res: Response) => {
+    try {
+        const { data } = await axios.post(`${process.env.PY_URL}/api/ehr`, req.body)
+        return res.status(200).json(data)
+    } catch (err) {
+        return res.status(400).json(err)
+    }
+}
 
 export const getPatient = async (req: Request, res: Response) => {
     const { email } = req.body
