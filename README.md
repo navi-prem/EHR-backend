@@ -32,6 +32,12 @@ This backend repository houses the server-side codebase responsible for handling
 - **Passport.js**: Authentication middleware for Node.js applications, used for Google OAuth integration.
 - **JSON Web Tokens (JWT)**: Used for authentication and authorization of API requests.
 
+# Schema
+![db](https://cdn.discordapp.com/attachments/1217865124820287508/1218838751061606420/image.png?ex=66091f0b&is=65f6aa0b&hm=feb9afc9cc60f48c3fef1eb89521a14ec2da99aa10b31c5b8d6619f19d897bd2&)
+
+# ER
+![db2](https://cdn.discordapp.com/attachments/1217865124820287508/1218843894754840657/image.png?ex=660923d5&is=65f6aed5&hm=c6c54eebecb3a47bcbd0efc330b4ada12019e3dada15be92fdaa60941afdf7da&)
+
 ## Setup Instructions
 To set up the backend locally, follow these steps:
 1. Clone this repository to your local machine.
